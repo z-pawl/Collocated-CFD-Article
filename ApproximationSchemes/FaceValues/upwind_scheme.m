@@ -1,0 +1,25 @@
+% UPWIND_SCHEME Calculates first-order upwind face interpolation coefficients.
+%
+% Inputs:
+%   grid (1,1) Grid2D - Computational grid object
+%   vel_x_faces, vel_r_faces (:,:) double - Face normal velocities [m/s]
+%
+% Outputs:
+%   coeffs_x, coeffs_r (:,:,3) double - Upwind face interpolation coefficients [aP, aN, b] ([-], [-], [variable dependent unit])
+function [coeffs_x, coeffs_r] = upwind_scheme(grid, vel_x_faces, vel_r_faces)
+    arguments
+        grid (1,1) Grid2D
+        vel_x_faces (:,:) double
+        vel_r_faces (:,:) double
+    end
+    sz = grid.sz;
+
+    coeffs_x = zeros([(sz + [1 0]) 3]);
+    coeffs_r = zeros([(sz + [0 1]) 3]);
+
+    coeffs_x(:,:,1) = double(vel_x_faces >= 0);
+    coeffs_x(:,:,2) = double(vel_x_faces < 0);
+
+    coeffs_r(:,:,1) = double(vel_r_faces >= 0);
+    coeffs_r(:,:,2) = double(vel_r_faces < 0);
+end
